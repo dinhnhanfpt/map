@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10"
+    tools:context="com.example.lehao.atmfinder.MainActivity"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/layoutmenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whilebg"
+        android:gravity="center"
+        android:padding="2dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/btnatm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:src="@drawable/atm" />
+
+        <ImageView
+            android:id="@+id/btngas"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:src="@drawable/gas" />
+    </LinearLayout>
+
+
+
+
+    <fragment
+        android:id="@+id/fragmentmap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10" />
+
+
+</LinearLayout>
