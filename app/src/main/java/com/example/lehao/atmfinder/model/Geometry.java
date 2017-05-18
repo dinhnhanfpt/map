@@ -10,21 +10,21 @@ import com.google.gson.annotations.SerializedName;
 public class Geometry {
     @SerializedName("location")
     @Expose
-    private Location location;
+    private Mlocation location;
     public Geometry() {
     }
 
-    public Geometry(Location location) {
+    public Geometry(Mlocation location) {
         super();
         this.location = location;
 
     }
 
-    public Location getLocation() {
+    public Mlocation getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(Mlocation location) {
         this.location = location;
     }
 

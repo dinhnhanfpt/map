@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Le Hao on 13/05/2017.
  */
 
-public class Location {
+public class Mlocation {
     @SerializedName("lat")
     @Expose
     private Double lat;
@@ -15,11 +15,11 @@ public class Location {
     @Expose
     private Double lng;
 
-    public Location() {
+    public Mlocation() {
     }
 
 
-    public Location(Double lat, Double lng) {
+    public Mlocation(Double lat, Double lng) {
         super();
         this.lat = lat;
         this.lng = lng;

@@ -9,9 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
+import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.example.lehao.atmfinder.model.Mlocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -28,39 +29,62 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, LocationListener {
     private static final int MY_REQUEST_CODE = 1;
+    List<Mlocation> arraylist = new ArrayList<>();
     GoogleApiClient mGoogleapiclient;
     GoogleMap mMap;
     private Location mLaslocation;
     private LocationRequest mLocationRequest;
     private boolean mLocationUpdateState;
     private static final int REQUEST_CHECK_SETTING = 2;
+    private String atmtype="atm";
+    private String gastype="gas_station";
 
     @BindView(R.id.layoutmenu)
     LinearLayout layoutmenu;
 
-    @BindView(R.id.btnatm)
-    ImageView btnatm;
-    @BindView(R.id.btngas)
-    ImageView btngas;
-
-    @OnClick(R.id.btngas)
-    void btngasclick() {
-
+    @OnClick(R.id.btnatm)
+    void setatm() {
+        mMap.clear();
+        setType(atmtype);
+        for (int i = 0; i < arraylist.size(); i++) {
+            Mlocation atmloca = arraylist.get(i);
+            Log.d("atm******", atmloca.getLng().toString() + "," + atmloca.getLat().toString());
+            LatLng atm = new LatLng(atmloca.getLat(), atmloca.getLng());
+            Marker marker = mMap.addMarker(new MarkerOptions().position(atm)
+                    .title("atm")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markeratm)));
+        }
 
     }
 
-    @OnClick(R.id.btnatm)
-    void btnatmclick() {
+    @OnClick(R.id.btngas)
+    void btngasclick() {
+        mMap.clear();
+        setType(gastype);
+        for (int i = 0; i < arraylist.size(); i++) {
+            Mlocation gaslog = new Mlocation();
+            gaslog = arraylist.get(i);
+            Log.d("gas******", gaslog.getLng().toString() + "," + gaslog.getLat().toString());
+            LatLng gas = new LatLng(gaslog.getLat(), gaslog.getLng());
+            Marker marker = mMap.addMarker(new MarkerOptions().position(gas)
+                    .title("Gas_station")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markergas)));
+        }
 
     }
 
@@ -68,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentmap);
         mapFragment.getMapAsync(this);
 
@@ -93,15 +118,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setTrafficEnabled(true);
     }
 
-    private MarkerOptions placeMarker(LatLng location) {
+    //gan dia chi
+//    private MarkerOptions placeMarker(LatLng location) {
+//
+//        MarkerOptions maker = new MarkerOptions().position(location);
+//
+//        return maker;
+//    }
 
-        MarkerOptions maker = new MarkerOptions().position(location);
-
-
-        return maker;
-    }
-
-
+    //kiem tra ket noi
     private void checkpermission() {
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -116,22 +141,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     double latitude, longitude;
 
+    public void setarray(List<Mlocation> location) {
+        this.arraylist = location;
+//        Log.d("Main************", arraylist.get(0).getLng().toString());
+    }
+
+    public void setType(String type) {
+        Xuly xuly = new Xuly(latitude, longitude, type, this);
+        xuly.execute();
+    }
+
+
+    //lay vi ti hien tai
     private void mylocation() {
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
         LocationAvailability locationAvailability = LocationServices.FusedLocationApi.getLocationAvailability(mGoogleapiclient);
         if (null != locationAvailability && locationAvailability.isLocationAvailable()) {
             mLaslocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleapiclient);
             if (mLaslocation != null) {
                 LatLng currentLocation = new LatLng(mLaslocation.getLatitude(), mLaslocation
                         .getLongitude());
-                //add pin at user's location
                 latitude = mLaslocation.getLatitude();
                 longitude = mLaslocation.getLongitude();
-               // show();
 
 
-//                placeMarker(currentLocation);
-                mMap.addMarker(placeMarker(currentLocation));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 17));
+                //  Log.d("Main************",String.valueOf(latitude+"--"+longitude).toString());
+              //  mMap.addMarker(placeMarker(currentLocation));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 14));
+
             }
         }
     }
@@ -230,8 +271,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         mLaslocation = location;
         mylocation();
-        Xuly xyly = new Xuly(latitude,longitude);
-        xyly.execute("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=");
 
 
 //            placeMarker(new LatLng(mLaslocation.getLatitude(), mLaslocation.getLongitude()));
