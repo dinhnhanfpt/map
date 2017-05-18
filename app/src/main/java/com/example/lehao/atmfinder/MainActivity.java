@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.lehao.atmfinder.model.Mlocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -92,6 +93,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        android.app.ActionBar actionBar = getActionBar();
+//        actionBar.setDisplayShowCustomEnabled(true);
+//        actionBar.setCustomView(R.layout.actionbar_layout);
+//        TextView  txt= (TextView) findViewById(R.id.action_bar_title);
+//        txt.setText("adasdfasdfasdf");
+
         ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentmap);
         mapFragment.getMapAsync(this);
