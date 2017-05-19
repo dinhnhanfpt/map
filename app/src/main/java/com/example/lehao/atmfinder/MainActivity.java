@@ -1,5 +1,7 @@
 package com.example.lehao.atmfinder;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -8,10 +10,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.lehao.atmfinder.model.Mlocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -45,8 +51,11 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, LocationListener {
     private static final int REQUEST_CHECK_SETTING = 2;
-    private static final String ATM ="atm";
-    private static final String GAS_STATION ="gas_station";
+    private static final String ATM = "atm";
+    private static final String GAS_STATION = "gas_station";
+    private Boolean ck = true;
+    double wieghtMenu;
+    double wieghtMap;
 
     private static final int MY_REQUEST_CODE = 1;
     List<Mlocation> arraylist = new ArrayList<>();
@@ -57,8 +66,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean mLocationUpdateState;
     private String mapType;
 
-    @BindView(R.id.layoutmenu)
-    LinearLayout layoutmenu;
+    @BindView(R.id.layoutMenu)
+    LinearLayout layoutMenu;
+
+    @BindView(R.id.layoutMap)
+    RelativeLayout layoutMap;
+
+    @BindView(R.id.layoutfinder)
+    LinearLayout layoutfinder;
 
     @OnClick(R.id.btnatm)
     void setAtmClick() {
@@ -70,19 +85,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setType(mapType = GAS_STATION);
     }
 
+    @BindView(R.id.btnmore)
+    ImageView btnmore;
+
+    @OnClick(R.id.btnmore)
+    public void moreClick() {
+        if (ck == true) {
+            btnmore.setImageResource(R.drawable.more1);
+            layoutfinder.setVisibility(LinearLayout.VISIBLE);
+//            layoutfinder.setAlpha(0.0f);
+//            layoutfinder.animate().translationY(layoutfinder.getHeight()).alpha(1.0f);
+            layoutfinder.setVisibility(View.VISIBLE);
+
+            ck = false;
+
+        } else {
+            btnmore.setImageResource(R.drawable.more);
+            layoutfinder.setVisibility(LinearLayout.GONE);
+            layoutfinder.setVisibility(View.GONE);
+
+            ck = true;
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        android.app.ActionBar actionBar = getActionBar();
-//        actionBar.setDisplayShowCustomEnabled(true);
-//        actionBar.setCustomView(R.layout.actionbar_layout);
-//        TextView  txt= (TextView) findViewById(R.id.action_bar_title);
-//        txt.setText("adasdfasdfasdf");
-
         ButterKnife.bind(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentmap);
         mapFragment.getMapAsync(this);
+
+        // an layout tim duong
+        layoutfinder.setVisibility(LinearLayout.GONE);
+       // getWieghtlayout();
 
 
         if (mGoogleapiclient == null) {
@@ -95,6 +131,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
+//    void getWieghtlayout() {
+//        wieghtMenu = ((LinearLayout.LayoutParams) layoutMenu.getLayoutParams()).weight;
+//        wieghtMap = ((LinearLayout.LayoutParams) layoutMap.getLayoutParams()).weight;
+//        Toast.makeText(this, String.valueOf(wieghtMap + "-" + wieghtMenu), Toast.LENGTH_LONG).show();
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -136,15 +178,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         arraylist.addAll(location);
 
         for (int i = 0; i < arraylist.size(); i++) {
-        Mlocation gaslog = new Mlocation();
-        gaslog = arraylist.get(i);
-        Log.d(mapType, gaslog.getLng().toString() + "," + gaslog.getLat().toString());
-        LatLng gas = new LatLng(gaslog.getLat(), gaslog.getLng());
-        mMap.addMarker(new MarkerOptions().position(gas)
-                .title(mapType.equals(ATM)?ATM:GAS_STATION)
-                .icon(BitmapDescriptorFactory.fromResource(mapType.equals(ATM)?R.drawable.markeratm:R.drawable.markergas)));
+            if (arraylist.isEmpty()) {
+                Log.d("Arraylis *****", String.valueOf(arraylist.size()));
+//
+
+            } else {
+                Mlocation gaslog = new Mlocation();
+                gaslog = arraylist.get(i);
+                Log.d(mapType, gaslog.getLng().toString() + "," + gaslog.getLat().toString());
+                LatLng gas = new LatLng(gaslog.getLat(), gaslog.getLng());
+                mMap.addMarker(new MarkerOptions().position(gas)
+                        .title(mapType.equals(ATM) ? ATM : GAS_STATION)
+                        .icon(BitmapDescriptorFactory.fromResource(mapType.equals(ATM) ? R.drawable.markeratm : R.drawable.markergas)));
+            }
+        }
     }
-}
 
     public void setType(String type) {
         Log.d("Finder", type);
@@ -170,8 +218,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                 //  Log.d("Main************",String.valueOf(latitude+"--"+longitude).toString());
-              //  mMap.addMarker(placeMarker(currentLocation));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 14));
+                //  mMap.addMarker(placeMarker(currentLocation));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16));
 
             }
         }

@@ -1,7 +1,9 @@
 package com.example.lehao.atmfinder;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.SystemClock;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.example.lehao.atmfinder.model.Geometry;
@@ -23,7 +25,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     private Double lat, log;
     String type;
 
-    public Xuly(Double lat, Double log,String type, MainActivity context) {
+    public Xuly(Double lat, Double log, String type, MainActivity context) {
         this.lat = lat;
         this.log = log;
         this.type = type;
@@ -42,7 +44,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
         Googledata googledata = null;
         try {
             Log.d("Finder", lat + " - " + log);
-            googledata = XulyJson.getdata(lat, log,type);
+            googledata = XulyJson.getdata(lat, log, type);
             for (Result r : googledata.getResults()) {
                 Geometry geometry = r.getGeometry();
                 location = geometry.getLocation();
@@ -72,11 +74,25 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     @Override
     protected void onPostExecute(List<Mlocation> value) {
         super.onPostExecute(value);
-//
-        mainActivity.setArrayLocation(value);
-//
+        //Log.d("value execute",String.valueOf(value.size()));
+        if (value.size() == 0) {
+            final AlertDialog.Builder aleart = new AlertDialog.Builder(mainActivity);
+            aleart.setTitle("WARNING !");
+            aleart.setMessage("Can't find recent " + type);
+            aleart.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            aleart.show();
+        } else {
+
+            mainActivity.setArrayLocation(value);
+        }
 
     }
+
 }
 
 
