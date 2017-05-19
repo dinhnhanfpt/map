@@ -2,7 +2,7 @@ package com.example.lehao.atmfinder.untils;
 
 import android.util.Log;
 
-import com.example.lehao.atmfinder.model.Confix;
+import com.example.lehao.atmfinder.model.Config;
 import com.example.lehao.atmfinder.model.Googledata;
 import com.google.gson.Gson;
 
@@ -16,9 +16,9 @@ import java.net.URL;
 
 public class XulyJson  {
     public static Googledata getdata(double lat, double log,String type) throws IOException {
-        Confix confix= new Confix();
+        Config config = new Config();
         try {
-            URL url = new URL(confix.getHttp()+lat+","+log+"&radius=500&type="+type+confix.getApikey());
+            URL url = new URL(config.getHttp()+lat+","+log+"&radius=500&type="+type+ config.getApikey());
             InputStreamReader inputStreamReader = new InputStreamReader(url.openStream(), "UTF-8");
             Googledata data = new Gson().fromJson(inputStreamReader, Googledata.class);
            Log.d("**********",String.valueOf(url.toString()));

@@ -2,6 +2,7 @@ package com.example.lehao.atmfinder;
 
 import android.os.AsyncTask;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.example.lehao.atmfinder.model.Geometry;
 import com.example.lehao.atmfinder.model.Googledata;
@@ -27,25 +28,20 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
         this.log = log;
         this.type = type;
         this.mainActivity = context;
-
     }
-
-
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         arraylist = new ArrayList<>();
-
-
     }
 
     @Override
     protected List<Mlocation> doInBackground(String... params) {
 //        String query = params[0];
         Googledata googledata = null;
-
         try {
+            Log.d("Finder", lat + " - " + log);
             googledata = XulyJson.getdata(lat, log,type);
             for (Result r : googledata.getResults()) {
                 Geometry geometry = r.getGeometry();
@@ -53,8 +49,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
                 arraylist.add(location);
 
                 publishProgress(location);
-                SystemClock.sleep(1000);
-
+                SystemClock.sleep(100);
             }
             return arraylist;
 
@@ -78,7 +73,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     protected void onPostExecute(List<Mlocation> value) {
         super.onPostExecute(value);
 //
-        mainActivity.setarray(value);
+        mainActivity.setArrayLocation(value);
 //
 
     }

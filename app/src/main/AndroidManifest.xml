@@ -11,11 +11,15 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
+            android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCRyUCGMIqPgRX37OlNWt9I8f6YT_nQQyA" />
+        <meta-data
+            android:name="com.google.android.geo.version"
+            android:value="@integer/google_play_services_version" />
         <activity android:name=".ActivitySplash">
 
             <intent-filter>

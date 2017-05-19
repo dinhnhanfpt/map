@@ -44,6 +44,10 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, LocationListener {
+    private static final int REQUEST_CHECK_SETTING = 2;
+    private static final String ATM ="atm";
+    private static final String GAS_STATION ="gas_station";
+
     private static final int MY_REQUEST_CODE = 1;
     List<Mlocation> arraylist = new ArrayList<>();
     GoogleApiClient mGoogleapiclient;
@@ -51,42 +55,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mLaslocation;
     private LocationRequest mLocationRequest;
     private boolean mLocationUpdateState;
-    private static final int REQUEST_CHECK_SETTING = 2;
-    private String atmtype="atm";
-    private String gastype="gas_station";
+    private String mapType;
 
     @BindView(R.id.layoutmenu)
     LinearLayout layoutmenu;
 
     @OnClick(R.id.btnatm)
-    void setatm() {
-        mMap.clear();
-        setType(atmtype);
-        for (int i = 0; i < arraylist.size(); i++) {
-            Mlocation atmloca = arraylist.get(i);
-            Log.d("atm******", atmloca.getLng().toString() + "," + atmloca.getLat().toString());
-            LatLng atm = new LatLng(atmloca.getLat(), atmloca.getLng());
-            Marker marker = mMap.addMarker(new MarkerOptions().position(atm)
-                    .title("atm")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markeratm)));
-        }
-
+    void setAtmClick() {
+        setType(mapType = ATM);
     }
 
     @OnClick(R.id.btngas)
-    void btngasclick() {
-        mMap.clear();
-        setType(gastype);
-        for (int i = 0; i < arraylist.size(); i++) {
-            Mlocation gaslog = new Mlocation();
-            gaslog = arraylist.get(i);
-            Log.d("gas******", gaslog.getLng().toString() + "," + gaslog.getLat().toString());
-            LatLng gas = new LatLng(gaslog.getLat(), gaslog.getLng());
-            Marker marker = mMap.addMarker(new MarkerOptions().position(gas)
-                    .title("Gas_station")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.markergas)));
-        }
-
+    void btnGasClick() {
+        setType(mapType = GAS_STATION);
     }
 
     @Override
@@ -148,16 +129,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     double latitude, longitude;
 
-    public void setarray(List<Mlocation> location) {
-        this.arraylist = location;
-//        Log.d("Main************", arraylist.get(0).getLng().toString());
+    public void setArrayLocation(List<Mlocation> location) {
+        mMap.clear();
+
+        arraylist.clear();
+        arraylist.addAll(location);
+
+        for (int i = 0; i < arraylist.size(); i++) {
+        Mlocation gaslog = new Mlocation();
+        gaslog = arraylist.get(i);
+        Log.d(mapType, gaslog.getLng().toString() + "," + gaslog.getLat().toString());
+        LatLng gas = new LatLng(gaslog.getLat(), gaslog.getLng());
+        mMap.addMarker(new MarkerOptions().position(gas)
+                .title(mapType.equals(ATM)?ATM:GAS_STATION)
+                .icon(BitmapDescriptorFactory.fromResource(mapType.equals(ATM)?R.drawable.markeratm:R.drawable.markergas)));
     }
+}
 
     public void setType(String type) {
+        Log.d("Finder", type);
         Xuly xuly = new Xuly(latitude, longitude, type, this);
         xuly.execute();
     }
-
 
     //lay vi ti hien tai
     private void mylocation() {
