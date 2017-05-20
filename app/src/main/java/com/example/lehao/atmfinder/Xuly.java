@@ -1,5 +1,6 @@
 package com.example.lehao.atmfinder;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -24,7 +25,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     private Mlocation location;
     private Double lat, log;
     String type;
-
+    ProgressDialog progressDialog;
     public Xuly(Double lat, Double log, String type, MainActivity context) {
         this.lat = lat;
         this.log = log;
@@ -36,6 +37,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     protected void onPreExecute() {
         super.onPreExecute();
         arraylist = new ArrayList<>();
+        progressDialog = ProgressDialog.show(mainActivity,"Please wait", "Finding "+ type,true);
     }
 
     @Override
@@ -88,7 +90,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
             aleart.show();
         } else {
 
-            mainActivity.setArrayLocation(value);
+            mainActivity.setArrayLocation(value,progressDialog);
         }
 
     }

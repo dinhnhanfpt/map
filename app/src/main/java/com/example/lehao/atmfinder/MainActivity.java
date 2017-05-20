@@ -1,7 +1,6 @@
 package com.example.lehao.atmfinder;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -10,14 +9,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.example.lehao.atmfinder.model.Mlocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -70,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     LinearLayout layoutMenu;
 
     @BindView(R.id.layoutMap)
-    RelativeLayout layoutMap;
+    FrameLayout layoutMap;
 
     @BindView(R.id.layoutfinder)
     LinearLayout layoutfinder;
@@ -113,13 +110,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentmap);
         mapFragment.getMapAsync(this);
 
+
         // an layout tim duong
         layoutfinder.setVisibility(LinearLayout.GONE);
-       // getWieghtlayout();
-
 
         if (mGoogleapiclient == null) {
             mGoogleapiclient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
@@ -148,13 +145,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setTrafficEnabled(true);
     }
 
-    //gan dia chi
-//    private MarkerOptions placeMarker(LatLng location) {
-//
-//        MarkerOptions maker = new MarkerOptions().position(location);
-//
-//        return maker;
-//    }
 
     //kiem tra ket noi
     private void checkpermission() {
@@ -171,18 +161,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     double latitude, longitude;
 
-    public void setArrayLocation(List<Mlocation> location) {
+    public void setArrayLocation(List<Mlocation> location, ProgressDialog dialog) {
         mMap.clear();
 
         arraylist.clear();
         arraylist.addAll(location);
 
         for (int i = 0; i < arraylist.size(); i++) {
-            if (arraylist.isEmpty()) {
-                Log.d("Arraylis *****", String.valueOf(arraylist.size()));
-//
-
-            } else {
                 Mlocation gaslog = new Mlocation();
                 gaslog = arraylist.get(i);
                 Log.d(mapType, gaslog.getLng().toString() + "," + gaslog.getLat().toString());
@@ -191,8 +176,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .title(mapType.equals(ATM) ? ATM : GAS_STATION)
                         .icon(BitmapDescriptorFactory.fromResource(mapType.equals(ATM) ? R.drawable.markeratm : R.drawable.markergas)));
             }
+            dialog.dismiss();
+
         }
-    }
+
 
     public void setType(String type) {
         Log.d("Finder", type);
