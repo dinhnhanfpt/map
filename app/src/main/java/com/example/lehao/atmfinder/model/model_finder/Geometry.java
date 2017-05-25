@@ -1,4 +1,4 @@
-package com.example.lehao.atmfinder.model;
+package com.example.lehao.atmfinder.model.model_finder;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

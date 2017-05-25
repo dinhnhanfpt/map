@@ -1,17 +1,15 @@
-package com.example.lehao.atmfinder;
+package com.example.lehao.atmfinder.untils;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.SystemClock;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.example.lehao.atmfinder.model.Geometry;
-import com.example.lehao.atmfinder.model.Googledata;
-import com.example.lehao.atmfinder.model.Mlocation;
-import com.example.lehao.atmfinder.model.Result;
-import com.example.lehao.atmfinder.untils.XulyJson;
+import com.example.lehao.atmfinder.MainActivity;
+import com.example.lehao.atmfinder.model.model_finder.Geometry;
+import com.example.lehao.atmfinder.model.model_finder.Googledata;
+import com.example.lehao.atmfinder.model.model_finder.Mlocation;
+import com.example.lehao.atmfinder.model.model_finder.Result;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import java.util.List;
 public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     private MainActivity mainActivity;
     private List<Mlocation> arraylist;
-    private String _name;
     private Mlocation location;
     private Double lat, log;
     String type;
@@ -42,7 +39,6 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
 
     @Override
     protected List<Mlocation> doInBackground(String... params) {
-//        String query = params[0];
         Googledata googledata = null;
         try {
             Log.d("Finder", lat + " - " + log);
@@ -68,7 +64,7 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     @Override
     protected void onProgressUpdate(Mlocation... values) {
         super.onProgressUpdate(values);
-        //Log.d("ad**********",values[0].getLat().toString());
+
 
 
     }
@@ -77,21 +73,8 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     protected void onPostExecute(List<Mlocation> value) {
         super.onPostExecute(value);
         //Log.d("value execute",String.valueOf(value.size()));
-        if (value.size() == 0) {
-            final AlertDialog.Builder aleart = new AlertDialog.Builder(mainActivity);
-            aleart.setTitle("WARNING !");
-            aleart.setMessage("Can't find recent " + type);
-            aleart.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            aleart.show();
-        } else {
-
             mainActivity.setArrayLocation(value,progressDialog);
-        }
+
 
     }
 

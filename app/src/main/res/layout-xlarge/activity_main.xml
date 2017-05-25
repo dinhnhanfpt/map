@@ -123,10 +123,6 @@
                     android:layout_weight="6" />
             </LinearLayout>
 
-
-
-
-
         </LinearLayout>
 
         <LinearLayout

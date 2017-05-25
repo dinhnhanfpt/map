@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -23,43 +23,32 @@
             android:layout_weight="12"
             android:background="@color/orangeBack"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="1dp">
+            android:padding="5dp"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/btnatm"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="3dp"
+                android:layout_marginLeft="3dp"
                 android:src="@drawable/atm" />
 
             <ImageView
                 android:id="@+id/btngas"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="3dp"
+                android:layout_marginLeft="3dp"
                 android:src="@drawable/gas" />
+            <ImageView
+                android:id="@+id/btndirection"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/menudirection"
+                android:layout_marginLeft="3dp"/>
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_weight="1"
-            android:background="@color/orangeBack">
 
-            <ImageView
-                android:id="@+id/btnmore"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/more" />
-
-        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -67,98 +56,28 @@
         android:layout_height="0dp"
         android:layout_weight="9"
         android:orientation="vertical">
-
         <LinearLayout
-            android:id="@+id/layoutfinder"
+            android:id="@+id/layoutinfor"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="0.5">
+            <TextView
+                android:id="@+id/txtdistance"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="0dp"
-                android:layout_weight="5"
-                android:orientation="vertical"
-                android:padding="1dp"
-                android:weightSum="2">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="0dp"
-                    android:gravity="center"
-                    android:weightSum="6"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
-                        android:text="From"
-                        android:layout_marginTop="0dp"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/txt_from"
-                        android:layout_width="0dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5.2" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="0dp"
-                    android:gravity="center"
-                    android:weightSum="6"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
-                        android:layout_marginTop="0dp"
-                        android:text="To"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/txt_to"
-                        android:layout_width="0dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5.2" />
-                </LinearLayout>
-
-
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="8dp"
-                android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:weightSum="4">
-
-                <ImageView
-                    android:id="@+id/btn_find"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:src="@drawable/direction" />
-            </LinearLayout>
+                android:background="@color/bginfor"
+                android:textColor="@color/whilebg"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/txtduration"
+                android:layout_width="0dp"
+                android:textColor="@color/whilebg"
+                android:gravity="center"
+                android:background="@color/bginfor"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 

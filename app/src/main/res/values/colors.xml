@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="whilebg">#FFFFFF</color>
     <color name="orangeBack">#ff5722</color>
+    <color name="directionbg">#4285f4</color>
+    <color name="bginfor">#cccccc</color>
 </resources>
