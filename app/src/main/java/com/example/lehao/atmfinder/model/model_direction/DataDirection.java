@@ -17,7 +17,6 @@ public class DataDirection {
 
     }
     public DataDirection(List<Routes> routes) {
-        super();
         this.routes = routes;
     }
     public List<Routes> getRoutes() {
@@ -25,7 +24,6 @@ public class DataDirection {
     }
 
     public void setRoutes(List<Routes> routes) {
-
         this.routes = routes;
     }
 }

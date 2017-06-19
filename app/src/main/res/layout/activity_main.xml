@@ -62,22 +62,49 @@
             android:layout_height="0dp"
             android:orientation="horizontal"
             android:layout_weight="0.5">
-            <TextView
-                android:id="@+id/txtdistance"
+            <LinearLayout
                 android:layout_width="0dp"
+                android:background="@color/whilebg"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:background="@color/bginfor"
-                android:textColor="@color/whilebg"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
-            <TextView
-                android:id="@+id/txtduration"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_margin="3dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/distance"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/txtdistance"
+                    android:layout_width="0dp"
+                    android:gravity="left"
+                    android:textColor="@color/orangeBack"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="0dp"
-                android:textColor="@color/whilebg"
-                android:gravity="center"
-                android:background="@color/bginfor"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:gravity="center"
+                android:background="@color/whilebg"
+                android:layout_weight="1">
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_margin="3dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/alarms"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/txtduration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:textColor="@color/orangeBack" />
+            </LinearLayout>
+
+
 
         </LinearLayout>
 

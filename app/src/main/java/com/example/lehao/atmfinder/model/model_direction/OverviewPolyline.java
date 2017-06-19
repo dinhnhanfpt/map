@@ -18,6 +18,7 @@ public class OverviewPolyline {
         super();
         this.points = points;
     }
+
     public String getPoints() {
         return points;
     }

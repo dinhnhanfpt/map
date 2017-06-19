@@ -13,17 +13,24 @@ public class Routes {
 
     @SerializedName("legs")
     @Expose
-    private List<Leg> legs = null;
+    private List<Leg> legs;
+
     @SerializedName("overview_polyline")
     @Expose
-
     private OverviewPolyline overviewPolyline;
 
     public Routes() {
     }
 
-    public Routes( List<Leg> legs, OverviewPolyline overviewPolyline) {
-        super();
+    public void setLegs(List<Leg> legs) {
+        this.legs = legs;
+    }
+
+    public void setOverviewPolyline(OverviewPolyline overviewPolyline) {
+        this.overviewPolyline = overviewPolyline;
+    }
+
+    public Routes(List<Leg> legs, OverviewPolyline overviewPolyline) {
         this.legs = legs;
         this.overviewPolyline = overviewPolyline;
     }
@@ -32,16 +39,9 @@ public class Routes {
         return legs;
     }
 
-    public void setLegs(List<Leg> legs) {
-        this.legs = legs;
-    }
-
     public OverviewPolyline getOverviewPolyline() {
         return overviewPolyline;
     }
 
-    public void setOverviewPolyline(OverviewPolyline overviewPolyline) {
-        this.overviewPolyline = overviewPolyline;
-    }
 
 }

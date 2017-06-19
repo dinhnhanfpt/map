@@ -22,6 +22,7 @@ public class StartLocation {
         this.lng=lng;
     }
 
+
     public Double getLat() {
         return lat;
     }

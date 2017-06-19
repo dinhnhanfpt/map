@@ -65,8 +65,6 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     protected void onProgressUpdate(Mlocation... values) {
         super.onProgressUpdate(values);
 
-
-
     }
 
     @Override

@@ -13,13 +13,14 @@ public class EndLocation {
     @SerializedName("lat")
     @Expose
     private Double lat;
+
     @SerializedName("lng")
     @Expose
     private Double lng;
+
     public EndLocation() {
     }
     public EndLocation(Double lat, Double lng) {
-        super();
         this.lat = lat;
         this.lng = lng;
     }
@@ -28,17 +29,15 @@ public class EndLocation {
         return lat;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
-
     public Double getLng() {
         return lng;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
     }
 
     public void setLng(Double lng) {
         this.lng = lng;
     }
-
-
 }

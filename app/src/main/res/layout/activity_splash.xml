@@ -11,6 +11,8 @@
     android:layout_marginBottom="30dp"
     android:layout_width="wrap_content"
     android:src="@drawable/logo"
+    android:scaleX="1.8"
+    android:scaleY="1.8"
     android:layout_height="wrap_content" />
 
 </FrameLayout>

@@ -19,7 +19,6 @@ public class Duration {
     }
 
     public Duration(String text, Integer value) {
-        super();
         this.text = text;
         this.value = value;
     }
@@ -28,16 +27,15 @@ public class Duration {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public Integer getValue() {
         return value;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public void setValue(Integer value) {
         this.value = value;
     }
-
 }
