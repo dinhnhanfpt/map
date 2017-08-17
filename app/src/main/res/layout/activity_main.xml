@@ -52,6 +52,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_map"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
@@ -103,7 +104,12 @@
                     android:gravity="left"
                     android:textColor="@color/orangeBack" />
             </LinearLayout>
-
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="6">
 
 
         </LinearLayout>
@@ -113,14 +119,24 @@
             android:id="@+id/layoutMap"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="6">
+            android:layout_weight="6"
+            android:orientation="horizontal"
+            >
 
             <fragment
                 android:id="@+id/fragmentmap"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+            <ListView
+                android:id="@+id/list_atm"
+                android:background="@color/whilebg"
+                android:layout_width="180dp"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                >
 
+            </ListView>
 
         </FrameLayout>
 

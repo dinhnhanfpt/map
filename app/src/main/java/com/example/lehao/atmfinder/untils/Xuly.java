@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
+public class Xuly extends AsyncTask<String, Result, List<Result>> {
     private MainActivity mainActivity;
-    private List<Mlocation> arraylist;
+    private List<Result> arraylist;
     private Mlocation location;
     private Double lat, log;
     String type;
@@ -38,17 +38,14 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     }
 
     @Override
-    protected List<Mlocation> doInBackground(String... params) {
+    protected List<Result> doInBackground(String... params) {
         Googledata googledata = null;
         try {
             Log.d("Finder", lat + " - " + log);
             googledata = XulyJson.getdata(lat, log, type);
             for (Result r : googledata.getResults()) {
-                Geometry geometry = r.getGeometry();
-                location = geometry.getLocation();
-                arraylist.add(location);
-
-                publishProgress(location);
+                arraylist.add(r);
+                publishProgress(r);
                 SystemClock.sleep(100);
             }
             return arraylist;
@@ -62,16 +59,16 @@ public class Xuly extends AsyncTask<String, Mlocation, List<Mlocation>> {
     }
 
     @Override
-    protected void onProgressUpdate(Mlocation... values) {
+    protected void onProgressUpdate(Result... values) {
         super.onProgressUpdate(values);
 
     }
 
     @Override
-    protected void onPostExecute(List<Mlocation> value) {
+    protected void onPostExecute(List<Result> value) {
         super.onPostExecute(value);
         //Log.d("value execute",String.valueOf(value.size()));
-            mainActivity.setArrayLocation(value,progressDialog);
+            mainActivity.setArrayLocation(value,progressDialog,type);
 
 
     }

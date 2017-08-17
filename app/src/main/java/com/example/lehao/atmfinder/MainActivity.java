@@ -2,21 +2,33 @@ package com.example.lehao.atmfinder;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lehao.atmfinder.model.model_direction.Distance;
 import com.example.lehao.atmfinder.model.model_direction.Duration;
@@ -25,7 +37,9 @@ import com.example.lehao.atmfinder.model.model_direction.Leg;
 import com.example.lehao.atmfinder.model.model_direction.OverviewPolyline;
 import com.example.lehao.atmfinder.model.model_direction.Routes;
 import com.example.lehao.atmfinder.model.model_direction.StartLocation;
+import com.example.lehao.atmfinder.model.model_finder.Geometry;
 import com.example.lehao.atmfinder.model.model_finder.Mlocation;
+import com.example.lehao.atmfinder.model.model_finder.Result;
 import com.example.lehao.atmfinder.untils.Direction;
 import com.example.lehao.atmfinder.untils.Xuly;
 import com.google.android.gms.common.ConnectionResult;
@@ -50,8 +64,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final int MY_REQUEST_CODE = 1;
     private static final int REQUES_CODE_DIRECTION = 3;
+    private static final String TAG = "Location";
 
     private GoogleApiClient mGoogleapiclient;
     GoogleMap mMap;
@@ -72,14 +90,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mLaslocation;
     private LocationRequest mLocationRequest;
     private boolean mLocationUpdateState;
-    private String mapType;
+    private String mapType, nameATM;
 
     List<Routes> mArraylist = new ArrayList<>();
     List<Mlocation> arraylist = new ArrayList<>();
     List<Leg> legs = new ArrayList<>();
+    List<String> arrATM = new ArrayList<>();
     List<LatLng> decoded;
-    String end, start, distance, txtduration;
+    String end, start, address;
     LatLng currentLocation;
+    boolean ck = true;
 
     @BindView(R.id.layoutinfor)
     LinearLayout layoutinfor;
@@ -92,17 +112,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @OnClick(R.id.btnatm)
     void setAtmClick() {
-        setType(mapType = ATM);
+        if (ck == true) {
+            setlayoutlisview();
+            ck = false;
+
+        } else {
+            hidelistview();
+            ck = true;
+
+        }
+        // setType(mapType = ATM);
     }
 
     @OnClick(R.id.btngas)
     void btnGasClick() {
         setType(mapType = GAS_STATION);
+
     }
+
+    @BindView(R.id.list_atm)
+    ListView listviewAtm;
 
     @OnClick(R.id.btndirection)
     void openDirection() {
+        getAddress(this, latitude, longitude);
         Intent intent = new Intent(this, ActivityDirection.class);
+        intent.putExtra("address", address);
         startActivityForResult(intent, REQUES_CODE_DIRECTION);
     }
 
@@ -116,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         layoutinfor.setVisibility(View.INVISIBLE);
         layoutinfor.setVisibility(LinearLayout.GONE);
 
+        hidelistview();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentmap);
         mapFragment.getMapAsync(this);
 
@@ -126,8 +163,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .addApi(LocationServices.API)
                     .build();
         }
+        // setlayoutlisview();
+
 
     }
+
+    //an listview atm
+    void hidelistview() {
+        listviewAtm.setVisibility(View.INVISIBLE);
+        listviewAtm.setVisibility(ListView.GONE);
+    }
+
+    //listview atm
+    private void setlayoutlisview() {
+        listviewAtm.setVisibility(View.VISIBLE);
+        listviewAtm.setVisibility(ListView.VISIBLE);
+        final String arrATM[] = {"AGRIBANK", "BIDVBANK", "VIETINBANK","ACBBANK","VIETCOMBANK", "TECHCOMBANK", "SHBBANK","SACOMBANK", "VPBANK", "TPBANK", "SEABANK", "ABBANK", "BACABANK", "VIETCAPITALBANK", "MSBANK", "VIETABANK", "VIETBANK"};
+        final ArrayList<String> arrlist = new ArrayList<>(Arrays.asList(arrATM));
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.itemlistview, arrlist) {
+            @NonNull
+            @Override
+            public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = (TextView) view.findViewById(R.id.txt_item);
+                textView.setHeight(100);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, arrlist.get(position), Toast.LENGTH_SHORT).show();
+                        nameATM = arrlist.get(position);
+                        setType(mapType = ATM);
+                        hidelistview();
+                    }
+                });
+                return view;
+            }
+        };
+
+        listviewAtm.setAdapter(arrayAdapter);
+
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -175,39 +253,103 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (null != locationAvailability && locationAvailability.isLocationAvailable()) {
             mLaslocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleapiclient);
             if (mLaslocation != null) {
-                 currentLocation = new LatLng(mLaslocation.getLatitude(), mLaslocation
+                currentLocation = new LatLng(mLaslocation.getLatitude(), mLaslocation
                         .getLongitude());
                 latitude = mLaslocation.getLatitude();
                 longitude = mLaslocation.getLongitude();
 
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16));
-
+                //getAddress(this,latitude,longitude);
             }
 
         }
     }
 
+    //lay dia chi hien tai
+    public void getAddress(Context context, double LATITUDE, double LONGITUDE) {
+        LatLng position = mMap.getCameraPosition().target;
+        double Lat = position.latitude;
+        double Long = position.longitude;
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(Lat, Long, 1);
+            if (addresses != null && addresses.size() > 0) {
+                address = addresses.get(0).getAddressLine(0);
+
+            }
+        } catch (IOException e) {
+        }
+    }
+
     //set marker ATM | GASSTATION
-    public void setArrayLocation(List<Mlocation> location, ProgressDialog dialog) {
+    public void setArrayLocation(List<Result> results, ProgressDialog dialog, String type) {
         dialog.dismiss();
-        Log.d("arraylocation",String.valueOf(location.size()));
-        if(location.size()==0){
+        Log.d("arraylocation", String.valueOf(results.size()));
+        if (results.size() == 0) {
             AlertDialog.Builder db = new AlertDialog.Builder(this);
-            db.setTitle("Tim kiem");
-            db.setMessage("Khong co "+mapType+" nao gan day");
-            db.setNegativeButton("cancel", new DialogInterface.OnClickListener(){
+            db.setTitle("FINDING...");
+            db.setMessage("can not find " + mapType + " near you !");
+            db.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface d, int arg1) {
                     d.cancel();
-                };
+                }
+
+                ;
             });
             AlertDialog alertDialog = db.create();
             alertDialog.show();
-        }
-        mMap.clear();
-        arraylist.clear();
-        arraylist.addAll(location);
+        } else {
+            arraylist.clear();
+            for (Result r : results) {
+              // Log.d("name....", r.getName().replaceAll("\\s+",""));
+//                arrATM.add(r.getName());
+                if (type.equals(GAS_STATION)) {
+                    Geometry geometry = r.getGeometry();
+                    Mlocation m = geometry.getLocation();
+                    mMap.clear();
+                    arraylist.add(m);
+                    setLocation();
+                } else if (type.equals(ATM)) {
+                    String name = r.getName().replaceAll("\\s+","").toUpperCase();
+                    Log.d("Uppercase....",name);
+                    if (name.contains(nameATM)) {
+                        Log.d("ATM " + nameATM, name);
+                        Geometry geometry = r.getGeometry();
+                        Mlocation m = geometry.getLocation();
+                        mMap.clear();
+                        arraylist.add(m);
 
+                        }
+
+                        setLocation();
+                    }
+                }
+            if(arraylist.size()==0){
+                AlertDialog.Builder db = new AlertDialog.Builder(this);
+                db.setTitle("FINDING ATM "+nameATM);
+                db.setMessage("can not find atm " + nameATM + " near you !");
+                db.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int arg1) {
+                        d.cancel();
+                    }
+
+
+                });
+                AlertDialog alertDialog = db.create();
+                alertDialog.show();
+            }
+            Log.d("array size...", String.valueOf(arraylist.size()));
+
+        }
+    }
+
+    // gan vi tri
+    void setLocation() {
         for (int i = 0; i < arraylist.size(); i++) {
             Mlocation gaslog = new Mlocation();
             gaslog = arraylist.get(i);
@@ -215,13 +357,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.addMarker(new MarkerOptions().position(gas)
                     .title(mapType.equals(ATM) ? ATM : GAS_STATION)
                     .icon(BitmapDescriptorFactory.fromResource(mapType.equals(ATM) ? R.drawable.markeratm : R.drawable.markergas)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,16));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16));
         }
-
-
-
     }
 
+    //gui request chi duong len api
     public void getLocationDirection() {
         Direction direction = new Direction(start, end, this);
         direction.execute();
@@ -231,17 +371,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //lay list data Leg
     public void setdirection(List<Routes> list, ProgressDialog progressDialog) {
         mMap.clear();
-        if(mArraylist!=null && decoded!=null) {
-            Log.d("IF***","if");
+        if (mArraylist != null && decoded != null) {
+            Log.d("IF***", "if");
             mArraylist.clear();
             decoded.clear();
             mArraylist.addAll(list);
             setpoly();
             progressDialog.cancel();
 
-        }
-        else {
-            Log.d("ELSE***","else");
+        } else {
+            Log.d("ELSE***", "else");
 
             mArraylist.addAll(list);
             setpoly();
@@ -250,7 +389,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
     }
-    private void setpoly(){
+
+    // lay gia tri duong di
+    private void setpoly() {
         Routes routes = new Routes();
         routes = mArraylist.get(0);
         legs = routes.getLegs();
@@ -263,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    //set markerdirection
+    //set ve duong di
     private void setMakerdirection() {
         layoutinfor.setVisibility(LinearLayout.GONE);
         layoutinfor.setVisibility(View.VISIBLE);
@@ -287,8 +428,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             endLocation = leg.getEndLocation();
             LatLng Eln = new LatLng(endLocation.getLat(), endLocation.getLng());
 
-            mMap.addMarker(new MarkerOptions().position(Ln).title("Start").icon(BitmapDescriptorFactory.
-                    fromResource(R.drawable.startlocation)));
 
             mMap.addMarker(new MarkerOptions().position(Eln).title("Finish").icon(BitmapDescriptorFactory.fromResource(R.drawable.endloca)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Eln, 15));
@@ -353,6 +492,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //xu ly tim atm hoac gas
     private void setType(String type) {
+        mMap.clear();
+        arraylist.clear();
         layoutinfor.setVisibility(View.INVISIBLE);
         layoutinfor.setVisibility(LinearLayout.GONE);
         Log.d("Finder", type);

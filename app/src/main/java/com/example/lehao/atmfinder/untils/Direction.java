@@ -2,6 +2,7 @@ package com.example.lehao.atmfinder.untils;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 
 import com.example.lehao.atmfinder.MainActivity;
 import com.example.lehao.atmfinder.model.model_direction.DataDirection;
@@ -19,6 +20,7 @@ public class Direction extends AsyncTask<String, Routes, List<Routes>> {
     List<Routes> list;
     MainActivity mainActivity;
     ProgressDialog progressDialog;
+
     public Direction(String start, String end, MainActivity mainActivity) {
         this.mStart = start;
         this.mEnd = end;
